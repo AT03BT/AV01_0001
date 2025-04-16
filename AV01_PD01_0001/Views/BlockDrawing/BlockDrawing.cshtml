@@ -103,7 +103,6 @@
                     <li><button class="drawing-button" data-shape-class="sp01_pt01_0001">Point</button></li>
                     <li><button class="drawing-button" data-shape-class="sp01_ln01_0001">Line</button></li>
                     <li><button class="drawing-button" data-shape-class="sp01_cc01_0001">Circle</button></li>
-                    <li><button class="drawing-button" data-shape-class="sp01_sq01_0001">Square</button></li>
                     <li><button class="drawing-button" data-shape-class="sp01_rt01_0001">Rectangle</button></li>
                     <li><button class="drawing-button" data-shape-class="cs01_pa01_0001">Path</button></li>
                 </ul>
@@ -288,8 +287,19 @@
         }
 
             .editor-svg:focus {
-                outline: none; /* It's good practice to remove the default outline */
-                box-shadow: none !important;
+                outline: none; /* Remove the default focus outline */
+                box-shadow: none !important; /* Remove the shadow on focus */
+                border: none; /* Remove the border on focus */
+            }
+
+            /* Remove focus styles for elements with tabindex within .editor-svg */
+            .editor-svg [tabindex]:focus {
+                outline: none;
+            }
+
+            /* If .editor-svg itself can receive tab focus */
+            .editor-svg:focus {
+                outline: none;
             }
 
         #svgDrawing {

@@ -64,6 +64,7 @@ export const TaskManager = {
 
         if (this.currentTask) {
 
+            this.plannerSpace.drawingPlane.focus();
             event.preventDefault(); // Prevent default behavior for all events
 
             switch (event.type) {
