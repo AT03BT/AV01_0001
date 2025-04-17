@@ -182,18 +182,20 @@ class ConstructionLine {
             y2: config.point.y,
             stroke: 'black',
             'stroke-width': 1,
-            /* 'stroke-dasharray': "10 20" */
         });
+    }
 
-        //this.animate = createAnimate({
-        //    attributeName: "stroke-dashoffset",
-        //    from: this.pointA.x,
-        //    to: this.pointB.x,
-        //    dur: '3s',
-        //    repeatCount: 'indefinite'
-        //});
+    addDashAnimation(svg) {
 
-        //this.svg.appendChild(this.animate);
+        svg.setAttribute('stroke-dasharray', '5, 5');
+        this.animate = createAnimate({
+            attributeName: "stroke-dashoffset",
+            from: this.pointA.x,
+            to: this.pointB.x,
+            dur: '3s',
+            repeatCount: 'indefinite'
+        });
+        this.svg.appendChild(this.animate);
     }
 
     setPointTo(point) {

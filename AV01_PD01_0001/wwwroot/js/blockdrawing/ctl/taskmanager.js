@@ -113,7 +113,7 @@ export const TaskManager = {
     },
 
 
-    checkQueue: function (currentTask) {
+    doDequeue: function (currentTask) {
 
         if (!TaskQueue.isEmpty()) {
 
