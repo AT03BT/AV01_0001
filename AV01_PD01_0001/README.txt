@@ -1,11 +1,23 @@
 AV01_PD01_0001 README.txt
-Version: 0.1.0
+Version: 0.1.1
 (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
 https://creativecommons.org/licenses/by/4.0/
 
 ALIGNED VERTICAL PLANNER DRAW
 =============================
 
+This is a simple C# .NET 8.0 project that draws a vertical planner using the System.Drawing library. 
+The project is designed to be run in a console application, and it generates a PNG image of the planner.
+
+The project is structured to allow for easy customization and extension.
+
+CURRENT PROJECT TASKS
+=====================
+
+1. Refactor the code base. Some consultation and clean up is in order.
+2. Define the BlockDrawings model that will be used by both cli and dta controllers.
+3. Package BlockDrawing as a NuGet package.
+4. Setup the project to use Entity Framework Core with SQLite for data storage.
 
 HISTORY
 =======
