@@ -1,6 +1,6 @@
 ﻿/*
     wwwroot/js/blockdrawing/ctl/geometricconstruction/pathconstruction.js
-    Version: 0.1.2
+    Version: 0.1.3
     (c) 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -16,6 +16,7 @@
         - Temporary line that follows the cursor.
         - Finalization of the path construction on right click.
         - Finalization of the path construction by pressing the Escape key.
+        - Grid lock option.
 
 */
 
@@ -33,7 +34,10 @@ export class PathConstruction extends GeometricConstruction {
     }
 
     addPoint(x, y) {
-        this.points.push({ x: x, y: y });
+        this.points.push({
+            x: this.plannerSpace.snapToGrid(x),
+            y: this.plannerSpace.snapToGrid(y)
+        });
     }
 
     setConstructionLine(point) {
@@ -44,7 +48,10 @@ export class PathConstruction extends GeometricConstruction {
 
     updateConstructionLine(point) {
         if (this.constructionLine) {
-            this.constructionLine.setPointTo(point);
+            this.constructionLine.setPointTo({
+                x: this.plannerSpace.snapToGrid(point.x),
+                y: this.plannerSpace.snapToGrid(point.y)
+            });
         }
     }
 
@@ -90,7 +97,10 @@ class WaitingForFirstPoint extends ConstructionState {
 
     acceptMouseUp(event) {
         this.geometricConstruction.addPoint(event.offsetX, event.offsetY);
-        this.geometricConstruction.setConstructionLine({ x: event.offsetX, y: event.offsetY });
+        this.geometricConstruction.setConstructionLine({
+            x: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetX),
+            y: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetY)
+        });
         this.geometricConstruction.currentState = new AddingPoints(this.geometricConstruction);
     }
 }
@@ -103,34 +113,36 @@ class AddingPoints extends ConstructionState {
 
     acceptMouseUp(event) {
         this.geometricConstruction.addPoint(event.offsetX, event.offsetY);
-        this.geometricConstruction.setConstructionLine({ x: event.offsetX, y: event.offsetY });
+        this.geometricConstruction.setConstructionLine({
+            x: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetX),
+            y: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetY)
+        });
 
         if (event.button === 2) {
             var isPath = this.geometricConstruction.isPath();
             if (isPath) {
                 this.geometricConstruction.finalise();
             } else {
-                this.geometricConstruction.reset(); //   Optionally clear if not enough points
+                this.geometricConstruction.reset(); //  Optionally clear if not enough points
             }
         }
     }
 
     acceptMouseMove(event) {
-        this.geometricConstruction.updateConstructionLine({ x: event.offsetX, y: event.offsetY });
+        this.geometricConstruction.updateConstructionLine({
+            x: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetX),
+            y: this.geometricConstruction.plannerSpace.snapToGrid(event.offsetY)
+        });
     }
 
-
     acceptKeyDown(event) {
-        console.log("acceptKeyDown this:", this);
-        console.log("acceptKeyDown this.geometricConstruction:", this.geometricConstruction);
         if (event.key === 'Escape') {
             var isPath = this.geometricConstruction.isPath();
             if (isPath) {
                 this.geometricConstruction.finalise();
             } else {
-                this.geometricConstruction.reset(); //   Optionally clear if not enough points
+                this.geometricConstruction.reset(); //  Optionally clear if not enough points
             }
         }
     }
-
 }

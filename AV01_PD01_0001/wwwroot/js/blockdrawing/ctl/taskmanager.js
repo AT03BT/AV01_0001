@@ -48,7 +48,6 @@ export const TaskManager = {
 
 
         this.plannerSpace.drawingPlane.addEventListener('contextmenu', this.dispatchInputEvent.bind(this));
-
     },
 
     dispatchInputEvent: function (event) {
@@ -66,6 +65,8 @@ export const TaskManager = {
 
             this.plannerSpace.drawingPlane.focus();
             event.preventDefault(); // Prevent default behavior for all events
+
+            this.plannerSpace.enableGridLock();
 
             switch (event.type) {
                 case 'mousedown':

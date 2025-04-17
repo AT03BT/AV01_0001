@@ -1,6 +1,6 @@
 ﻿/*
     blockdrawing/cli/mdl/plannerspace.js
-    Version: 0.1.1
+    Version: 0.1.2
     (c) 2024, 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -11,6 +11,8 @@
 export class PlannerSpace {
 
     constructionLayer = null;
+    gridSpacing = 10; // Default grid spacing
+    gridLockEnabled = false;
 
     constructor(config) {
         this.config = config;
@@ -24,6 +26,25 @@ export class PlannerSpace {
 
     init() {
         // Initialize the planner space
+    }
+
+    setGridSpacing(spacing) {
+        this.gridSpacing = Math.max(1, spacing); // Ensure spacing is at least 1
+    }
+
+    enableGridLock() {
+        this.gridLockEnabled = true;
+    }
+
+    disableGridLock() {
+        this.gridLockEnabled = false;
+    }
+
+    snapToGrid(value) {
+        if (!this.gridLockEnabled) {
+            return value;
+        }
+        return Math.round(value / this.gridSpacing) * this.gridSpacing;
     }
 
     addLine(pointA, pointB) {
