@@ -1,6 +1,6 @@
 ﻿/*
     wwwroot/js/blockdrawing/ctl/taskmanager.js
-    Version: 0.1.0
+    Version: 0.2.0
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -22,125 +22,92 @@
         Dispatching mouse events to the appropriate task.
 
 */
+
 import { TaskQueue } from './taskqueue.js';
+
 export const TaskManager = {
 
     currentTask: null,
     plannerSpace: null,
+    drawingPlane: null, // Store the drawing plane element
 
     init: function (config) {
-
         this.plannerSpace = config.plannerSpace;
-        this.configureEventDelegation(this.drawingArea);
+        this.drawingPlane = config.drawingPlane; // Get drawingPlane from config
+        this.configureEventDelegation();
         TaskQueue.addListener(this);
     },
 
-    configureEventDelegation: function (drawingPlane) {
+    configureEventDelegation: function () {
+        if (!this.drawingPlane) {
+            console.error("Drawing plane is not initialized. Event delegation cannot be configured.");
+            return;
+        }
 
-        this.plannerSpace.drawingPlane.addEventListener('mousedown', this.dispatchInputEvent.bind(this));
-        this.plannerSpace.drawingPlane.addEventListener('mouseup', this.dispatchInputEvent.bind(this));
-        this.plannerSpace.drawingPlane.addEventListener('mousemove', this.dispatchInputEvent.bind(this));
-        this.plannerSpace.drawingPlane.addEventListener('click', this.dispatchInputEvent.bind(this));
-
-        this.plannerSpace.drawingPlane.addEventListener('keydown', this.dispatchInputEvent.bind(this));
-        this.plannerSpace.drawingPlane.addEventListener('keyup', this.dispatchInputEvent.bind(this));
-        this.plannerSpace.drawingPlane.addEventListener('keypress', this.dispatchInputEvent.bind(this));
-
-
-        this.plannerSpace.drawingPlane.addEventListener('contextmenu', this.dispatchInputEvent.bind(this));
+        const events = ['mousedown', 'mouseup', 'mousemove', 'click', 'keydown', 'keyup', 'keypress', 'contextmenu'];
+        events.forEach(eventType => {
+            this.drawingPlane.addEventListener(eventType, this.dispatchInputEvent.bind(this));
+        });
     },
 
     dispatchInputEvent: function (event) {
-        if (event.type !== 'mousemove') {
-            console.log('Event type:', event.type);
-            console.log('Target element:', event.target);
-            if (event instanceof MouseEvent) {
-                console.log('Mouse coordinates:', event.clientX, event.clientY);
-            } else if (event instanceof KeyboardEvent) {
-                console.log('Key:', event.key); // Log the pressed key
-            }
-        }
-
-        if (this.currentTask) {
-
-            this.plannerSpace.drawingPlane.focus();
-            event.preventDefault(); // Prevent default behavior for all events
-
-            this.plannerSpace.enableGridLock();
-
-            switch (event.type) {
-                case 'mousedown':
-                    this.currentTask.acceptMouseDown(event);
-                    break;
-                case 'mouseup':
-                    this.currentTask.acceptMouseUp(event);
-                    break;
-                case 'mousemove':
-                    this.currentTask.acceptMouseMove(event);
-                    break;
-                case 'click':
-                    this.currentTask.acceptMouseClick(event);
-                    break;
-                case 'keydown':
-                    this.currentTask.acceptKeyDown(event);
-                    break;
-                case 'keyup':
-                    this.currentTask.acceptKeyUp(event);
-                    break;
-                case 'keypress':
-                    this.currentTask.acceptKeyPress(event);
-                    break;
-                default:
-                    console.log("Unknown event type: " + event.type);
-                    break;
-            }
-
-            if (this.currentTask.isFinished()) {
-                this.currentTask = null;
-                if (TaskQueue.front()) {
-                    this.currentTask = TaskQueue.dequeue();
+        try {
+            if (event.type !== 'mousemove') {
+                console.log('Event type:', event.type);
+                console.log('Target element:', event.target);
+                if (event instanceof MouseEvent) {
+                    console.log('Mouse coordinates:', event.clientX, event.clientY);
+                } else if (event instanceof KeyboardEvent) {
+                    console.log('Key:', event.key); // Log the pressed key
                 }
             }
+
+            if (this.currentTask) {
+                event.preventDefault(); // Prevent default behavior for all events
+
+                let eventHandler;
+                switch (event.type) {
+                    case 'mousedown': eventHandler = this.currentTask.acceptMouseDown; break;
+                    case 'mouseup': eventHandler = this.currentTask.acceptMouseUp; break;
+                    case 'mousemove': eventHandler = this.currentTask.acceptMouseMove; break;
+                    case 'click': eventHandler = this.currentTask.acceptMouseClick; break;
+                    case 'keydown': eventHandler = this.currentTask.acceptKeyDown; break;
+                    case 'keyup': eventHandler = this.currentTask.acceptKeyUp; break;
+                    case 'keypress': eventHandler = this.currentTask.acceptKeyPress; break;
+                    default:
+                        console.warn("Unknown event type: " + event.type + ".  Event not dispatched to task.");
+                        return; // Important: Exit, don't try to call undefined handler
+                }
+
+                if (typeof eventHandler === 'function') {
+                    eventHandler.call(this.currentTask, event); // Call the handler
+                }
+                else {
+                    console.warn(`Event handler for ${event.type} is not a function on the current task.`);
+                }
+
+                if (this.currentTask.isFinished()) {
+                    this.currentTask = null;
+                    this.startNextTask(); // Use the helper function
+                }
+            }
+        } catch (error) {
+            console.error("Error dispatching event:", error, event); // Log the error and the event
+            // Consider if you need to do any cleanup or error recovery here.
         }
     },
 
     onTaskEnqueued: function (task) {
-
-        if (!this.currentTask) {
-            this.currentTask = TaskQueue.dequeue();
-        }
-
+        this.startNextTask(); // Use the helper function
     },
 
-
-    doDequeue: function (currentTask) {
-
-        if (!TaskQueue.isEmpty()) {
-
-            this.currentTask = EditingQeueue.dequeue();
-
-            switch (currentTask.type) {
-
-                case 'GeometricConstruction':
-                    currentTask.setPlannerSpace(drawingArea);
-                    this.svg.style.cursor = "crosshair";
-                    break;
-
-                case 'GroupingOperation':
-                    currentTask.setPlannerSpace(drawingArea);
-                    this.svg.style.cursor = "default";
-                    break;
-
-                default:
-                    console.log("Unknown currentTask type: " + currentTask.type);
-                    break;
-
+    startNextTask: function () {
+        if (!this.currentTask) {
+            this.currentTask = TaskQueue.dequeue();
+            if (this.currentTask) {
+                //  Set any necessary dependencies, e.g., the drawing area.
+                this.currentTask.setPlannerSpace(this.plannerSpace);
             }
-
-
         }
-
-
     }
-
-}
+};

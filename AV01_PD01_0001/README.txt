@@ -15,9 +15,12 @@ CURRENT PROJECT TASKS
 =====================
 
 1. Refactor the code base. Some consultation and clean up is in order.
-2. Define the BlockDrawings model that will be used by both cli and dta controllers.
-3. Package BlockDrawing as a NuGet package.
 4. Setup the project to use Entity Framework Core with SQLite for data storage.
+2. Define the BlockDrawings model that will be used by both cli and dta controllers.
+
+To Do later:
+3. Package BlockDrawing as a NuGet package.
+
 
 HISTORY
 =======
@@ -36,7 +39,7 @@ dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore -v 8.*
 dotnet add package Microsoft.EntityFrameworkCore.Design -v 8.*
 dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design -v 8.*
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite -v 8.*
-dotnet aspnet-codegenerator identity -dc MC01_0001.Data.ApplicationDbContext --files "Account.Register;Account.Login;Account.Logout;Account.Manage.Index;Account.Manage.ChangePassword;Account.Manage.Email;Account.Manage.TwoFactorAuthentication;Account.Manage.ExternalLogins"
+dotnet aspnet-codegenerator identity -dc AV01_PD01_0001.Data.ApplicationDbContext --files "Account.Register;Account.Login;Account.Logout;Account.Manage.Index;Account.Manage.ChangePassword;Account.Manage.Email;Account.Manage.TwoFactorAuthentication;Account.Manage.ExternalLogins"
 
 
 2023-10-01: Initial version created by ChatGPT.
