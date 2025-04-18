@@ -28,7 +28,12 @@ HISTORY
 STEP 2:
 ----------------------------
 
+dotnet aspnet-codegenerator identity -dc AV01_PD01_0001.Data.BlockCatalogueDbContext --files "Account.Register;Account.Login;Account.Logout;Account.Manage.Index;Account.Manage.ChangePassword;Account.Manage.Email;Account.Manage.TwoFactorAuthentication;Account.Manage.ExternalLogins"
 
+dotnet ef migrations add InitialCreate  --context BlockCatalogueDbContext
+dotnet ef database update --context BlockCatalogueDbContext
+
+rename Identity to ApplicationUser if required and add missing using statements
 
 STEP 1: Create a new project
 ----------------------------

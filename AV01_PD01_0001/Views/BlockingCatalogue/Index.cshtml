@@ -1,0 +1,64 @@
+﻿@* 
+    Views/Movies/Index.cshtml
+    Version: 1.0.0
+    (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
+    https://creativecommons.org/licenses/by/4.0/
+
+    This work builds upon concepts and examples from:
+    "Get started with ASP.NET Core MVC | Microsoft Learn"
+    https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
+ *@
+@model AV01_PD01_0001.Models.MovieGenreViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="BlockingCatalogue" asp-action="Index" method="get">
+    <p>
+
+        <select asp-for="MovieGenre" asp-items="Model.Genres">
+            <option value="">All</option>
+        </select>
+
+        <label>Title: <input type="text" asp-for="SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Movies![0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Movies![0].Genre)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Movies!)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

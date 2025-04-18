@@ -15,14 +15,13 @@ var SEED_DATA = true;
 var ADD_ROLES = true;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDbContext<BlockCatalogueDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>() // Add roles
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<BlockCatalogueDbContext>();
 
 builder.Services.AddScoped<UserManager<ApplicationUser>, CustomUserManager>();
 
@@ -34,6 +33,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CanEditMovies", policy =>
         policy.RequireAuthenticatedUser()
                .RequireRole("Admin", "Editor"));
+
+    options.AddPolicy("CanMakeBaseBlocks", policy =>
+        policy.RequireAuthenticatedUser()
+               .RequireRole("Admin", "Editor", "User"));
 
     options.AddPolicy("CanMakeComments", policy =>
         policy.RequireAuthenticatedUser()
@@ -67,7 +70,7 @@ app.UseRouting();
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Movies}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 if (ADD_ROLES == true)
@@ -93,20 +96,25 @@ if (ADD_ROLES == true)
         }
 
         // Assign a user to a role (example)
-        var adminUser = await userManager.FindByEmailAsync("@outlook.com");
+        var adminUser = await userManager.FindByEmailAsync("benoit@thebase.net");
         if (adminUser != null)
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
-        var adminUser2 = await userManager.FindByEmailAsync("jeffry@outlook.com");
-        if (adminUser2 != null)
+        adminUser = await userManager.FindByEmailAsync("georg@thebase.net");
+        if (adminUser != null)
         {
-            await userManager.AddToRoleAsync(adminUser2, "Admin");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
-        var adminUser3 = await userManager.FindByEmailAsync("jeffry@outlook.com");
-        if (adminUser3 != null)
+        adminUser = await userManager.FindByEmailAsync("helg@thebase.net");
+        if (adminUser != null)
         {
-            await userManager.AddToRoleAsync(adminUser3, "Admin");
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+        adminUser = await userManager.FindByEmailAsync("waclaw@thebase.net");
+        if (adminUser != null)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 }

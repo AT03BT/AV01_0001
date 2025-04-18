@@ -15,7 +15,8 @@ namespace AV01_PD01_0001.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("BlockDrawing", "BlockDrawing");
+            //return RedirectToAction("BlockDrawing", "BlockDrawing");
+            return View();
         }
 
         public IActionResult Privacy()

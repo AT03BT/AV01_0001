@@ -33,7 +33,7 @@ export const TaskManager = {
 
     init: function (config) {
         this.plannerSpace = config.plannerSpace;
-        this.drawingPlane = config.drawingPlane; // Get drawingPlane from config
+        this.drawingPlane = config.plannerSpace.drawingPlane; // Get drawingPlane from config
         this.configureEventDelegation();
         TaskQueue.addListener(this);
     },
@@ -102,11 +102,11 @@ export const TaskManager = {
     },
 
     startNextTask: function () {
-        if (!this.currentTask) {
+        if (TaskQueue.front()) {
             this.currentTask = TaskQueue.dequeue();
             if (this.currentTask) {
                 //  Set any necessary dependencies, e.g., the drawing area.
-                this.currentTask.setPlannerSpace(this.plannerSpace);
+                /*this.currentTask.setPlannerSpace(this.plannerSpace);*/
             }
         }
     }
