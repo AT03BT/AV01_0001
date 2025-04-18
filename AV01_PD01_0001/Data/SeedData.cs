@@ -32,7 +32,7 @@ public static class SeedData
                 return;   // DB has been seeded
             }
             context.Movies.AddRange(
-                new Movie
+                new Block
                 {
                     Title = "CB01_01",
                     ReleaseDate = DateTime.Parse("1989-2-12"),
@@ -40,7 +40,7 @@ public static class SeedData
                     Rating = "R",
                     Price = 7.99M
                 },
-                new Movie
+                new Block
                 {
                     Title = "BB 01 24",
                     ReleaseDate = DateTime.Parse("1984-3-13"),
@@ -48,7 +48,7 @@ public static class SeedData
                     Rating = "MA",
                     Price = 8.99M
                 },
-                new Movie
+                new Block
                 {
                     Title = "CT 00 01",
                     ReleaseDate = DateTime.Parse("1986-2-23"),
@@ -56,7 +56,7 @@ public static class SeedData
                     Rating = "MA",
                     Price = 9.99M
                 },
-                new Movie
+                new Block
                 {
                     Title = "BB01_01",
                     ReleaseDate = DateTime.Parse("1959-4-15"),

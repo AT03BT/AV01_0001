@@ -21,7 +21,7 @@ namespace AV01_PD01_0001.Data
     {
         public BlockCatalogueDbContext(DbContextOptions<BlockCatalogueDbContext> options) : base(options) { }
 
-        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Block> Movies { get; set; }
         public DbSet<Comment> Comments { get; set; } // Add this line
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

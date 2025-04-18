@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AV01_PD01_0001.Models
 {
-    public class Movie
+    public class Block
     {
         public int Id { get; set; }
 
@@ -57,7 +57,7 @@ namespace AV01_PD01_0001.Models
 
         // Foreign key to the Movie
         public int MovieId { get; set; }
-        public Movie Movie { get; set; }
+        public Block Movie { get; set; }
 
         // Foreign key to the User (ApplicationUser)
         public string UserId { get; set; }
