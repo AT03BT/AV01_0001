@@ -132,7 +132,7 @@ namespace AV01_PD01_0001.Controllers
 
 
        
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         public IActionResult Create()
         {
             return View();
@@ -143,7 +143,7 @@ namespace AV01_PD01_0001.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Type,Rating")] Block movie)
         {
@@ -158,7 +158,7 @@ namespace AV01_PD01_0001.Controllers
 
 
         // GET: Movies/Edit/5
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -179,7 +179,7 @@ namespace AV01_PD01_0001.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Block movie)
         {
@@ -213,7 +213,7 @@ namespace AV01_PD01_0001.Controllers
 
 
         // GET: Movies/Delete/5
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -233,7 +233,7 @@ namespace AV01_PD01_0001.Controllers
 
 
         // POST: Movies/Delete/5
-        [Authorize(Policy = "CanEditMovies")]
+        [Authorize(Policy = "CanEditBlocks")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

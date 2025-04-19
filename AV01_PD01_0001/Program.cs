@@ -29,7 +29,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AuthenticatedUsers", policy =>
         policy.RequireAuthenticatedUser());
 
-    options.AddPolicy("CanEditMovies", policy =>
+    options.AddPolicy("CanEditBlocks", policy =>
         policy.RequireAuthenticatedUser()
                .RequireRole("Admin", "Editor"));
 
