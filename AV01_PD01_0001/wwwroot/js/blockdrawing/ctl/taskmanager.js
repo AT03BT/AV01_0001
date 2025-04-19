@@ -98,7 +98,9 @@ export const TaskManager = {
     },
 
     onTaskEnqueued: function (task) {
-        this.startNextTask(); // Use the helper function
+        if (!this.currentTask) {
+            this.startNextTask(); // Use the helper function
+        }
     },
 
     startNextTask: function () {

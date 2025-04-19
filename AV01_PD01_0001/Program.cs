@@ -24,7 +24,6 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<BlockCatalogueDbContext>();
 
 builder.Services.AddScoped<UserManager<ApplicationUser>, CustomUserManager>();
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AuthenticatedUsers", policy =>

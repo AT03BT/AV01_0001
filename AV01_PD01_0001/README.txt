@@ -25,6 +25,12 @@ To Do later:
 HISTORY
 =======
 
+STEP 3: Add Entity Framework Core and Identity
+-----------------------------------------------
+
+dotnet ef migrations add BlockCatalogueUpdate  --context BlockCatalogueDbContext
+dotnet ef database update --context BlockCatalogueDbContext
+
 STEP 2:
 ----------------------------
 

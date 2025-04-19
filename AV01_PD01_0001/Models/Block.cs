@@ -23,26 +23,16 @@ namespace AV01_PD01_0001.Models
         [Required]
         public string? Title { get; set; }
 
-        [Display(Name = "Release Date")]
-        [DataType(DataType.Date)]
-        public DateTime ReleaseDate { get; set; }
-
         [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
         [Required]
         [StringLength(30)]
-        public string? Genre { get; set; }
+        public string? Type { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
-        [Range(1, 100)]
-        [DataType(DataType.Currency)]
-        public decimal Price { get; set; }
-
-        [RegularExpression(@"^[A-Z]+[a-zA-Z0-9""'\s-]*$")]
+        [RegularExpression(@"^\*{0,5}$", ErrorMessage = "Rating must be between 0 and 5 stars.")]
         [StringLength(5)]
-        [Required]
         public string? Rating { get; set; }
 
-        public ICollection<Comment> Comments { get; set; } // Add this line
+        public ICollection<Comment>? Comments { get; set; } // Add this line
     }
 
 
@@ -56,8 +46,8 @@ namespace AV01_PD01_0001.Models
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow; // Set to current time by default
 
         // Foreign key to the Movie
-        public int MovieId { get; set; }
-        public Block Movie { get; set; }
+        public int BlockId { get; set; }
+        public Block Block { get; set; }
 
         // Foreign key to the User (ApplicationUser)
         public string UserId { get; set; }

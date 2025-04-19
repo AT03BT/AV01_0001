@@ -39,16 +39,16 @@ namespace AV01_PD01_0001.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string movieGenre, string searchString)
         {
-            if (_context.Movies == null)
+            if (_context.Blocks == null)
             {
                 return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
             }
 
             // Use LINQ to get list of genres.
-            IQueryable<string> genreQuery = from m in _context.Movies
-                                            orderby m.Genre
-                                            select m.Genre;
-            var movies = from m in _context.Movies
+            IQueryable<string> genreQuery = from m in _context.Blocks
+                                            orderby m.Type
+                                            select m.Type;
+            var movies = from m in _context.Blocks
                          select m;
 
             if (!string.IsNullOrEmpty(searchString))
@@ -58,12 +58,12 @@ namespace AV01_PD01_0001.Controllers
 
             if (!string.IsNullOrEmpty(movieGenre))
             {
-                movies = movies.Where(x => x.Genre == movieGenre);
+                movies = movies.Where(x => x.Type == movieGenre);
             }
 
-            var movieGenreVM = new MovieGenreViewModel
+            var movieGenreVM = new BlockTypeViewModel
             {
-                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Category = new SelectList(await genreQuery.Distinct().ToListAsync()),
                 Movies = await movies.ToListAsync()
             };
 
@@ -79,7 +79,7 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movies
+            var movie = await _context.Blocks
                 .Include(m => m.Comments) // Eager load comments
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -102,7 +102,7 @@ namespace AV01_PD01_0001.Controllers
                 return BadRequest("Comment content is required."); // Or handle this more gracefully
             }
 
-            var movie = await _context.Movies.FindAsync(movieId);
+            var movie = await _context.Blocks.FindAsync(movieId);
             if (movie == null)
             {
                 return NotFound();
@@ -119,7 +119,7 @@ namespace AV01_PD01_0001.Controllers
 
             var comment = new Comment
             {
-                Movie = movie,
+                Block = movie,
                 Content = content,
                 User = user
             };
@@ -131,7 +131,7 @@ namespace AV01_PD01_0001.Controllers
         }
 
 
-        [HttpPost]
+       
         [Authorize(Policy = "CanEditMovies")]
         public IActionResult Create()
         {
@@ -145,7 +145,7 @@ namespace AV01_PD01_0001.Controllers
         [HttpPost]
         [Authorize(Policy = "CanEditMovies")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Block movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,Type,Rating")] Block movie)
         {
             if (ModelState.IsValid)
             {
@@ -166,7 +166,7 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Blocks.FindAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -221,7 +221,7 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Movies
+            var movie = await _context.Blocks
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
@@ -238,10 +238,10 @@ namespace AV01_PD01_0001.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Blocks.FindAsync(id);
             if (movie != null)
             {
-                _context.Movies.Remove(movie);
+                _context.Blocks.Remove(movie);
             }
 
             await _context.SaveChangesAsync();
@@ -251,7 +251,7 @@ namespace AV01_PD01_0001.Controllers
 
         private bool MovieExists(int id)
         {
-            return _context.Movies.Any(e => e.Id == id);
+            return _context.Blocks.Any(e => e.Id == id);
         }
     }
 }

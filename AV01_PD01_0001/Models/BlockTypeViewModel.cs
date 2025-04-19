@@ -16,11 +16,11 @@ using System.Collections.Generic;
 namespace AV01_PD01_0001.Models
 {
 
-    public class MovieGenreViewModel
+    public class BlockTypeViewModel
     {
         public List<Block>? Movies { get; set; }
-        public SelectList? Genres { get; set; }
-        public string? MovieGenre { get; set; }
+        public SelectList? Category { get; set; }
+        public string? BlockCategory { get; set; }
         public string? SearchString { get; set; }
     }
 }

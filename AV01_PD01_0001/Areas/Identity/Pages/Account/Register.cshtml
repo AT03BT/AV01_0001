@@ -1,4 +1,14 @@
-﻿@page
+﻿@* 
+    Areas/Identity/Pages/Account/Register.cshtml
+    Version: 1.0.0
+    (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
+    https://creativecommons.org/licenses/by/4.0/
+
+    This work builds upon concepts and examples from:
+    Introduction to Identity on ASP.NET Core | Microsoft Learn
+    https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-8.0&tabs=visual-studio
+*@
+@page
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -16,6 +26,26 @@
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email">Email</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="First Name" />
+                <label asp-for="Input.FirstName">First Name</label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="Last Name" />
+                <label asp-for="Input.LastName">Last Name</label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Address" class="form-control" autocomplete="address" aria-required="true" placeholder="Address" />
+                <label asp-for="Input.Address">Address</label>
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.DateOfBirth" class="form-control" type="date" aria-required="true" />
+                <label asp-for="Input.DateOfBirth">Date of Birth</label>
+                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />

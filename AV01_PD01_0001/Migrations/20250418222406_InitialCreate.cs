@@ -61,9 +61,7 @@ namespace AV01_PD01_0001.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Genre = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Rating = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false)
                 },
                 constraints: table =>
@@ -185,7 +183,7 @@ namespace AV01_PD01_0001.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    BlockId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -198,8 +196,8 @@ namespace AV01_PD01_0001.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_Movies_MovieId",
-                        column: x => x.MovieId,
+                        name: "FK_Comments_Movies_BlockId",
+                        column: x => x.BlockId,
                         principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -245,9 +243,9 @@ namespace AV01_PD01_0001.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_MovieId",
+                name: "IX_Comments_BlockId",
                 table: "Comments",
-                column: "MovieId");
+                column: "BlockId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",

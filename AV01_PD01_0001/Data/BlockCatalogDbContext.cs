@@ -21,7 +21,7 @@ namespace AV01_PD01_0001.Data
     {
         public BlockCatalogueDbContext(DbContextOptions<BlockCatalogueDbContext> options) : base(options) { }
 
-        public DbSet<Block> Movies { get; set; }
+        public DbSet<Block> Blocks { get; set; }
         public DbSet<Comment> Comments { get; set; } // Add this line
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,9 +30,9 @@ namespace AV01_PD01_0001.Data
 
             // Configure the relationship between Movie and Comment
             modelBuilder.Entity<Comment>()
-                .HasOne(c => c.Movie)
+                .HasOne(c => c.Block)
                 .WithMany(m => m.Comments)
-                .HasForeignKey(c => c.MovieId)
+                .HasForeignKey(c => c.BlockId)
                 .OnDelete(DeleteBehavior.Cascade); // If a movie is deleted, delete its comments
 
             // Configure the relationship between ApplicationUser and Comment

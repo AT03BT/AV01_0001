@@ -8,7 +8,7 @@
     "Get started with ASP.NET Core MVC | Microsoft Learn"
     https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
  *@
-@model AV01_PD01_0001.Models.MovieGenreViewModel
+@model AV01_PD01_0001.Models.BlockTypeViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -22,7 +22,7 @@
 <form asp-controller="BlockingCatalogue" asp-action="Index" method="get">
     <p>
 
-        <select asp-for="MovieGenre" asp-items="Model.Genres">
+        <select asp-for="BlockCategory" asp-items="Model.Category">
             <option value="">All</option>
         </select>
 
@@ -37,7 +37,7 @@
                 @Html.DisplayNameFor(model => model.Movies![0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Movies![0].Genre)
+                @Html.DisplayNameFor(model => model.Movies![0].Type)
             </th>
             <th></th>
         </tr>
@@ -50,7 +50,7 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
+                    @Html.DisplayFor(modelItem => item.Type)
                 </td>
 
                 <td>

@@ -4,6 +4,7 @@ using AV01_PD01_0001.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AV01_PD01_0001.Migrations
 {
     [DbContext(typeof(BlockCatalogueDbContext))]
-    partial class BlockCatalogueDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418222406_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +114,7 @@ namespace AV01_PD01_0001.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Rating")
+                        .IsRequired()
                         .HasMaxLength(5)
                         .HasColumnType("nvarchar(5)");
 
@@ -126,7 +130,7 @@ namespace AV01_PD01_0001.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blocks");
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("AV01_PD01_0001.Models.Comment", b =>
