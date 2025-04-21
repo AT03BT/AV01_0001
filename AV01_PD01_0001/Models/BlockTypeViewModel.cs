@@ -1,6 +1,6 @@
 /*
-    Models/MovieGenreViewModel.cs
-    Version: 1.0.0
+    Models/BlockTypeViewModel.cs
+    Version: 0.0.1
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -23,7 +23,7 @@ namespace AV01_PD01_0001.Models
 
     public class BlockTypeViewModel
     {
-        public List<Block>? Movies { get; set; }
+        public List<Block>? Blocks { get; set; }
         public SelectList? Category { get; set; }
         public string? BlockCategory { get; set; }
         public string? SearchString { get; set; }

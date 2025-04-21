@@ -17,6 +17,7 @@ The project is designed to be run in a console application, and it generates a P
 
 The project is structured to allow for easy customization and extension.
 
+
 CURRENT PROJECT TASKS
 =====================
 
@@ -30,6 +31,18 @@ To Do later:
 
 HISTORY
 =======
+
+STEP 6: Refactor to an Abstract Model Suitable for storage into a the base
+--------------------------------------------------------------------------
+
+
+STEP 5: Refactor to the Rendering Class
+---------------------------------------
+
+
+STEP 4: Add the BlockDrawing model
+----------------------------------
+
 
 STEP 3: Add Entity Framework Core and Identity
 -----------------------------------------------

@@ -1,6 +1,6 @@
 ﻿@* 
-    Views/Movies/Details.cshtml
-    Version: 1.0.0
+    Views/Blocks/Details.cshtml
+    Version: 0.1.0
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -17,7 +17,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Movie</h4>
+    <h4>Block</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -80,8 +80,8 @@ else
 
 @if (User.Identity.IsAuthenticated) // Only show form if logged in
 {
-    <form asp-action="CreateComment" asp-route-movieId="@Model.Id" method="post">
-        <input type="hidden" name="movieId" value="@Model.Id" />
+    <form asp-action="CreateComment" asp-route-blockId="@Model.Id" method="post">
+        <input type="hidden" name="blockId" value="@Model.Id" />
         <textarea name="content" class="form-control" rows="3" required></textarea>
         <button type="submit" class="btn btn-primary">Add Comment</button>
         @Html.AntiForgeryToken() // CSRF protection

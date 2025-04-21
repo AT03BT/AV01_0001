@@ -1,6 +1,6 @@
 ﻿/*
-    Data/MovieDbContext.cs
-    Version: 1.0.0
+    Data/BlockCatalogueDbContext.cs
+    Version: 0.0.1
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -33,12 +33,12 @@ namespace AV01_PD01_0001.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure the relationship between Movie and Comment
-            modelBuilder.Entity<Comment>()
+			// Configure the relationship between BlockCataloguelock and Comment
+			modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Block)
                 .WithMany(m => m.Comments)
                 .HasForeignKey(c => c.BlockId)
-                .OnDelete(DeleteBehavior.Cascade); // If a movie is deleted, delete its comments
+                .OnDelete(DeleteBehavior.Cascade); // If a block is deleted, delete its comments
 
             // Configure the relationship between ApplicationUser and Comment
             modelBuilder.Entity<Comment>()

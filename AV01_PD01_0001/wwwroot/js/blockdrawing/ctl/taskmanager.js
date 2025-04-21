@@ -4,11 +4,6 @@
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
-    I need your help, support me by checking out my music on YouTube:
-    https://youtube.com/shorts/Q921NmrtY9c
-    Leave a good comment and a thumbs up.
-    Thank you for your support!
-
     Task Manager
     ============
 
@@ -118,3 +113,12 @@ export const TaskManager = {
         }
     }
 };
+
+
+
+/*
+    I need your help, support me by checking out my music on YouTube:
+    https://youtube.com/shorts/Q921NmrtY9c
+    Leave a good comment and a thumbs up.
+    Thank you for your support!
+*/

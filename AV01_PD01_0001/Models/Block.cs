@@ -1,6 +1,6 @@
 /*
-    Models/Movie.cs
-    Version: 1.0.0
+    Models/Block.cs
+    Version: 0.0.1
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -50,7 +50,7 @@ namespace AV01_PD01_0001.Models
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow; // Set to current time by default
 
-        // Foreign key to the Movie
+        // Foreign key to the Block
         public int BlockId { get; set; }
         public Block Block { get; set; }
 

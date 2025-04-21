@@ -1,6 +1,6 @@
 ﻿/*
     Data/SeedData.cs
-    Version: 1.0.0
+    Version: 0.0.1
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -31,7 +31,7 @@ public static class SeedData
             serviceProvider.GetRequiredService<
                 DbContextOptions<BlockCatalogueDbContext>>()))
         {
-            // Look for any movies.
+            // Look for any blocks.
             if (context.Blocks.Any())
             {
                 return;   // DB has been seeded

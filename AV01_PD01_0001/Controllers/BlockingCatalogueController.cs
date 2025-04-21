@@ -1,6 +1,6 @@
 ﻿/*
-    Controllers/MoviesController.cs
-    Version: 0.1.0
+    Controllers/BlockCatalogueController.cs
+    Version: 0.0.1
     (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -42,37 +42,37 @@ namespace AV01_PD01_0001.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string movieGenre, string searchString)
+        public async Task<IActionResult> Index(string blockCategory, string searchString)
         {
             if (_context.Blocks == null)
             {
-                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+                return Problem("Entity set 'BlockCatalogueDbContext.Blocks'  is null.");
             }
 
             // Use LINQ to get list of genres.
             IQueryable<string> genreQuery = from m in _context.Blocks
                                             orderby m.Type
                                             select m.Type;
-            var movies = from m in _context.Blocks
+            var blocks = from m in _context.Blocks
                          select m;
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                movies = movies.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+                blocks = blocks.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
             }
 
-            if (!string.IsNullOrEmpty(movieGenre))
+            if (!string.IsNullOrEmpty(blockCategory))
             {
-                movies = movies.Where(x => x.Type == movieGenre);
+                blocks = blocks.Where(x => x.Type == blockCategory);
             }
 
-            var movieGenreVM = new BlockTypeViewModel
+            var blockCategoryVm = new BlockTypeViewModel
             {
                 Category = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                Movies = await movies.ToListAsync()
+                Blocks = await blocks.ToListAsync()
             };
 
-            return View(movieGenreVM);
+            return View(blockCategoryVm);
         }
 
 
@@ -84,31 +84,31 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Blocks
+            var block = await _context.Blocks
                 .Include(m => m.Comments) // Eager load comments
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movie == null)
+            if (block == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(block);
         }
 
 
         [HttpPost]
         [Authorize(Policy = "AuthenticatedUsers")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateComment(int movieId, string content)
+        public async Task<IActionResult> CreateComment(int blockId, string content)
         {
             if (string.IsNullOrEmpty(content))
             {
                 return BadRequest("Comment content is required."); // Or handle this more gracefully
             }
 
-            var movie = await _context.Blocks.FindAsync(movieId);
-            if (movie == null)
+            var block = await _context.Blocks.FindAsync(blockId);
+            if (block == null)
             {
                 return NotFound();
             }
@@ -124,7 +124,7 @@ namespace AV01_PD01_0001.Controllers
 
             var comment = new Comment
             {
-                Block = movie,
+                Block = block,
                 Content = content,
                 User = user
             };
@@ -132,7 +132,7 @@ namespace AV01_PD01_0001.Controllers
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", new { id = movieId }); // Redirect back to details page
+            return RedirectToAction("Details", new { id = blockId }); // Redirect back to details page
         }
 
 
@@ -144,25 +144,25 @@ namespace AV01_PD01_0001.Controllers
         }
 
 
-        // POST: Movies/Create
+        // POST: BlockCatalogue/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Policy = "CanEditBlocks")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Type,Rating")] Block movie)
+        public async Task<IActionResult> Create([Bind("Id,Title,Type,Rating")] Block block)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
+                _context.Add(block);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            return View(block);
         }
 
 
-        // GET: Movies/Edit/5
+        // GET: BlockCatalogue/Edit/5
         [Authorize(Policy = "CanEditBlocks")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -171,24 +171,24 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Blocks.FindAsync(id);
-            if (movie == null)
+            var block = await _context.Blocks.FindAsync(id);
+            if (block == null)
             {
                 return NotFound();
             }
-            return View(movie);
+            return View(block);
         }
 
 
-        // POST: Movies/Edit/5
+        // POST: BlockCatalogue/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Policy = "CanEditBlocks")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Block movie)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] Block block)
         {
-            if (id != movie.Id)
+            if (id != block.Id)
             {
                 return NotFound();
             }
@@ -197,12 +197,12 @@ namespace AV01_PD01_0001.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(block);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.Id))
+                    if (!BlockExists(block.Id))
                     {
                         return NotFound();
                     }
@@ -213,11 +213,11 @@ namespace AV01_PD01_0001.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            return View(block);
         }
 
 
-        // GET: Movies/Delete/5
+        // GET: BlockCatalogue/Delete/5
         [Authorize(Policy = "CanEditBlocks")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -226,27 +226,27 @@ namespace AV01_PD01_0001.Controllers
                 return NotFound();
             }
 
-            var movie = await _context.Blocks
+            var block = await _context.Blocks
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            if (block == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(block);
         }
 
 
-        // POST: Movies/Delete/5
+        // POST: BlockCatalogue/Delete/5
         [Authorize(Policy = "CanEditBlocks")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _context.Blocks.FindAsync(id);
-            if (movie != null)
+            var block = await _context.Blocks.FindAsync(id);
+            if (block != null)
             {
-                _context.Blocks.Remove(movie);
+                _context.Blocks.Remove(block);
             }
 
             await _context.SaveChangesAsync();
@@ -254,7 +254,7 @@ namespace AV01_PD01_0001.Controllers
         }
 
 
-        private bool MovieExists(int id)
+        private bool BlockExists(int id)
         {
             return _context.Blocks.Any(e => e.Id == id);
         }

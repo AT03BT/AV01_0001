@@ -3,11 +3,6 @@
     Version: 0.0.1
     (c) 2024, 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
-    
-   Please support me by checking out my music on YouTube:
-    https://youtube.com/shorts/Q921NmrtY9c
-    Leave a good comment and a thumbs up.
-    Thank you for your support!
 
 
     Component Block
@@ -44,4 +39,17 @@
 import { Observable } from '../itf/observable.js';
 export const ComponentBlock = {
 
+
+
 }
+
+
+
+/*
+
+   Please support me by checking out my music on YouTube:
+    https://youtube.com/shorts/Q921NmrtY9c
+    Leave a good comment and a thumbs up.
+    Thank you for your support!
+
+*/

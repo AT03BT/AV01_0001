@@ -645,7 +645,7 @@ $.validator.addMethod( "dateFA", function( value, element ) {
  * @example $.validator.methods.date("01/13/1990")
  * @result false
  *
- * @example $.validator.methods.date("01.01.1900")
+ * @example $.validator.methods.date("00.11.1900")
  * @result false
  *
  * @example <input name="pippo" class="{dateITA:true}" />
