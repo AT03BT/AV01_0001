@@ -14,10 +14,12 @@
     =============
         The planner space is the main drawing area where all the geometric constructions take place.
 */
+import { ComponentBlock, Shape } from '../../mdl/componentblock.js'; 
 export class PlannerSpace {
 
+    componentBlock = null; // Instance of ComponentBlock
     constructionLayer = null;
-    gridSpacing = 10; // Default grid spacing
+    gridSpacing = 10;
     gridLockEnabled = false;
 
     constructor(config) {
@@ -28,6 +30,8 @@ export class PlannerSpace {
         this.nthLayer = config.nthLayer;
 
         this.constructionLayer = new ConstructionLayer(config);
+        this.componentBlock = new ComponentBlock(); // Initialize ComponentBlock
+        this.componentBlock.subscribe(this); // Subscribe PlannerSpace to ComponentBlock
     }
 
     init() {
@@ -35,7 +39,7 @@ export class PlannerSpace {
     }
 
     setGridSpacing(spacing) {
-        this.gridSpacing = Math.max(1, spacing); // Ensure spacing is at least 1
+        this.gridSpacing = Math.max(1, spacing);
     }
 
     enableGridLock() {
@@ -53,79 +57,121 @@ export class PlannerSpace {
         return Math.round(value / this.gridSpacing) * this.gridSpacing;
     }
 
-    addLine(pointA, pointB) {
-        var line = createLine({
-            type: 'line',
-            x1: pointA.x,
-            y1: pointA.y,
-            x2: pointB.x,
-            y2: pointB.y,
-            stroke: 'black'
-        });
-        this.foregroundLayer.appendChild(line);
-        return line;
+    // --- Shape Management ---
+    // These methods now interact with the ComponentBlock
+
+    addShape(layerId, type, attributes) {
+        const shapeId = this.generateShapeId(); // Implement this method
+        const shape = new Shape(shapeId, type, attributes);
+        this.componentBlock.addShape(layerId, shape);
     }
 
-    addCircle(pointA, pointB) {
-        var radius = Math.sqrt(Math.pow(pointA.x - pointB.x, 2) + Math.pow(pointA.y - pointB.y, 2));
-        var circle = createCircle({
-            type: 'circle',
-            cx: pointA.x,
-            cy: pointA.y,
-            r: radius,
-            stroke: 'black',
-            fill: 'none'
-        });
-        this.foregroundLayer.appendChild(circle);
-        return circle;
+    removeShape(layerId, shapeId) {
+        this.componentBlock.removeShape(layerId, shapeId);
     }
 
-    addRectangle(pointA, pointB) {
-        var rect = createRect({
-            type: 'rect',
-            x: Math.min(pointA.x, pointB.x), // Use pointB.x to find the smaller x
-            y: Math.min(pointA.y, pointB.y),
-            width: Math.abs(pointB.x - pointA.x),
-            height: Math.abs(pointB.y - pointA.y),
-            stroke: 'black',
-            fill: 'none'
-        });
-        this.foregroundLayer.appendChild(rect);
-        return rect;
+    updateShape(layerId, shapeId, newAttributes) {
+        this.componentBlock.updateShape(layerId, shapeId, newAttributes);
     }
 
-    addPath(pathData) {
-        var path = createPath({
-            type: 'path',
-            d: pathData,
-            stroke: 'black',
-            fill: 'none'
-        });
-        this.foregroundLayer.appendChild(path);
-        return path;
+    // --- Layer Management ---
+
+    addLayer(layerId) {
+        this.componentBlock.addLayer(layerId);
     }
 
-    addPoint(point) {
-        var circle = createCircle({
-            type: 'circle',
-            cx: point.x,
-            cy: point.y,
-            r: 3,
-            fill: 'black',
-            class: 'block-point' // For potential styling
-        });
-
-        circle.addEventListener('mouseover', () => {
-            circle.setAttribute('fill', 'red');
-        });
-
-        circle.addEventListener('mouseout', () => {
-            circle.setAttribute('fill', 'black');
-        });
-
-        this.foregroundLayer.appendChild(circle);
-        return circle;
+    removeLayer(layerId) {
+        this.componentBlock.removeLayer(layerId);
     }
+
+    // --- Observer Pattern ---
+    // PlannerSpace implements the update() method to react to changes in ComponentBlock
+
+    update(componentBlock) {
+        // This method is called when the ComponentBlock changes
+        // Update the SVG canvas here based on the new state of the componentBlock
+        this.render(componentBlock);
+    }
+
+    render(componentBlock) {
+        // Clear the SVG canvas
+        this.clearCanvas();
+
+        // Iterate through the layers and shapes in the ComponentBlock
+        componentBlock.layers.forEach((shapes, layerId) => {
+            shapes.forEach(shape => {
+                this.renderShape(layerId, shape);
+            });
+        });
+    }
+
+    clearCanvas() {
+        // Clear the foreground layer (or all layers if needed)
+        this.foregroundLayer.innerHTML = '';
+    }
+
+    renderShape(layerId, shape) {
+        let svgElement = null;
+        switch (shape.type) {
+            case 'line':
+                svgElement = this.createLine(shape.attributes);
+                break;
+            case 'circle':
+                svgElement = this.createCircle(shape.attributes);
+                break;
+            case 'rect':
+                svgElement = this.createRect(shape.attributes);
+                break;
+            case 'path':
+                svgElement = this.createPath(shape.attributes);
+                break;
+            case 'point':
+                svgElement = this.createPoint(shape.attributes);
+                break;
+            // ... other shape types
+        }
+
+        if (svgElement) {
+            const targetLayer = this.getLayer(layerId);
+            if (targetLayer) {
+                targetLayer.appendChild(svgElement);
+            }
+        }
+    }
+
+    createLine(attributes) {
+        return createLine(attributes); // Assuming createLine is imported from svgutils.js
+    }
+
+    createCircle(attributes) {
+        return createCircle(attributes);
+    }
+
+    createRect(attributes) {
+        return createRect(attributes);
+    }
+
+    createPath(attributes) {
+        return createPath(attributes);
+    }
+
+    createPoint(attributes) {
+        return createCircle(attributes); // Reusing circle for points
+    }
+
+    getLayer(layerId) {
+        return this.nthLayer.get(layerId);
+    }
+
+    // --- Utility Methods ---
+
+    generateShapeId() {
+        // Implement a method to generate unique shape IDs
+        // This could be a simple counter, a UUID generator, etc.
+        return Math.random().toString(36).substring(2, 15); // Example: simple random ID
+    }
+
+    // ... other PlannerSpace methods ...
 }
 
 class ConstructionLayer {

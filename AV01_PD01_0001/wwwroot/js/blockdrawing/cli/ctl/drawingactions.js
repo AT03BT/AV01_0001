@@ -30,19 +30,19 @@ export const DrawingActions = {
         this.getGeometricConstructions();
         document.querySelectorAll(config.selectorString).forEach(button => {
 
-            button.addEventListener('click', () => { // Use an arrow function
+            button.addEventListener('click', () => {
 
                 console.log("Drawing button clicked");
 
-                var shapeIdentifier = button.getAttribute('data-shape-class'); // Access via button
+                var shapeIdentifier = button.getAttribute('data-shape-class');
 
-                var editingTask = this.getGeometricConstruction(shapeIdentifier); // 'this' refers to DrawingActions
+                var editingTask = this.getGeometricConstruction(shapeIdentifier);
                 if (editingTask) {
 
                     TaskQueue.enqueueDrawingTask(editingTask);
 
                 } else {
-                    console.error("Cannot draw without editing task: " + button.text); // Access via button
+                    console.error("Cannot draw without editing task: " + button.text);
                 }
 
             });
@@ -66,12 +66,45 @@ export const DrawingActions = {
 
         if (geometricConstruction) {
 
-            return new geometricConstruction({
-                plannerSpace: this.plannerSpace
-            });
+            //  Instead of returning a new instance of the construction class,
+            //  we now call plannerSpace.addShape to create the shape.
+            //  The construction class is still used to handle user input.
+
+            switch (shapeIdentifier) {
+                case "sp01_pt01_0001":
+                    //  Point construction doesn't really need a construction class,
+                    //  but we keep it for consistency.
+                    return new geometricConstruction({
+                        plannerSpace: this.plannerSpace,
+                        addShape: (attributes) => this.plannerSpace.addShape("0", "point", attributes)
+                    });
+                case "sp01_ln01_0001":
+                    return new geometricConstruction({
+                        plannerSpace: this.plannerSpace,
+                        addShape: (attributes) => this.plannerSpace.addShape("0", "line", attributes)
+                    });
+                case "sp01_cc01_0001":
+                    return new geometricConstruction({
+                        plannerSpace: this.plannerSpace,
+                        addShape: (attributes) => this.plannerSpace.addShape("0", "circle", attributes)
+                    });
+                case "sp01_rt01_0001":
+                    return new geometricConstruction({
+                        plannerSpace: this.plannerSpace,
+                        addShape: (attributes) => this.plannerSpace.addShape("0", "rect", attributes)
+                    });
+                case "cs01_pa01_0001":
+                    return new geometricConstruction({
+                        plannerSpace: this.plannerSpace,
+                        addShape: (attributes) => this.plannerSpace.addShape("0", "path", attributes)
+                    });
+                default:
+                    console.log("Unknown shape identifier: " + shapeIdentifier);
+                    throw new Error("Unknown shape type: " + shapeIdentifier);
+            }
 
         } else {
-                
+
             console.log("Unknown shape identifier: " + shapeIdentifier);
             throw new Error("Unknown shape type: " + shapeIdentifier);
 

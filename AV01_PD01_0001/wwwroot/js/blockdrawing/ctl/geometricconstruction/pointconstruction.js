@@ -19,31 +19,36 @@
 import { GeometricConstruction, ConstructionState } from '../geometricconstruction.js';
 
 export class PointConstruction extends GeometricConstruction {
+    addShapeCallback = null;
 
     constructor(config) {
         super(config);
-        this.currentState = new PlacingPoint(this);
+        this.plannerSpace = config.plannerSpace;
+        this.addShapeCallback = config.addShape;
+        this.currentState = new WaitingForPoint(this);
     }
 
-    placePoint(x, y) {
-        this.plannerSpace.addPoint({ x: x, y: y });
-        this.finished = true; // Point construction is immediate
+    finalise(x, y) {
+        this.addShapeCallback({
+            cx: this.plannerSpace.snapToGrid(x),
+            cy: this.plannerSpace.snapToGrid(y),
+            r: 3,
+            fill: 'black',
+            class: 'block-point'
+        });
+        this.finished = true;
         this.currentState = null;
-    }
-
-    reset() {
-        this.currentState = new PlacingPoint(this);
-        this.finished = false;
+        this.plannerSpace.constructionLayer.clear();
     }
 }
 
-class PlacingPoint extends ConstructionState {
+class WaitingForPoint extends ConstructionState {
     constructor(geometricConstruction) {
         super();
         this.geometricConstruction = geometricConstruction;
     }
 
     acceptMouseUp(event) {
-        this.geometricConstruction.placePoint(event.offsetX, event.offsetY);
+        this.geometricConstruction.finalise(event.offsetX, event.offsetY);
     }
 }

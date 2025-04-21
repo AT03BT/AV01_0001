@@ -1,6 +1,6 @@
 ﻿/*
     wwwroot/js/blockdrawing/ctl/geometricconstruction/lineconstruction.js
-    Version: 0.1.1
+    Version: 0.1.2
     (c) 2024, 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -20,11 +20,13 @@ export class LineConstruction extends GeometricConstruction {
 
     pointA = null;
     pointB = null;
-
     constructionLine = null;
+    addShapeCallback = null; // Store the addShape callback
 
     constructor(config) {
         super(config);
+        this.plannerSpace = config.plannerSpace;
+        this.addShapeCallback = config.addShape; // Get the callback
         this.currentState = new WaitingForPoint_A(this);
     }
 
@@ -54,17 +56,22 @@ export class LineConstruction extends GeometricConstruction {
     }
 
     finalise() {
-        this.plannerSpace.addLine(this.pointA, this.pointB);
+        // Instead of calling plannerSpace.addLine directly,
+        // use the addShapeCallback to add the shape to the ComponentBlock
+        this.addShapeCallback({
+            x1: this.pointA.x,
+            y1: this.pointA.y,
+            x2: this.pointB.x,
+            y2: this.pointB.y,
+            stroke: 'black'
+        });
         this.finished = true;
         this.curretntState = null;
         this.plannerSpace.constructionLayer.clear();
     }
-
 }
 
 class WaitingForPoint_A extends ConstructionState {
-
-
     constructor(geometricConstruction) {
         super();
         this.geometricConstruction = geometricConstruction;
@@ -75,17 +82,13 @@ class WaitingForPoint_A extends ConstructionState {
         this.geometricConstruction.setConstructionLine(event.offsetX, event.offsetY);
         this.geometricConstruction.currentState = new WaitingForPoint_B(this.geometricConstruction);
     }
-
 }
 
-
 class WaitingForPoint_B extends ConstructionState {
-
     constructor(geometricConstruction) {
         super();
         this.geometricConstruction = geometricConstruction;
     }
-
 
     acceptMouseMove(event) {
         this.geometricConstruction.setPointB(event.offsetX, event.offsetY);

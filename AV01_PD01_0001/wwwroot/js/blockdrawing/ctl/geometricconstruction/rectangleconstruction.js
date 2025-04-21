@@ -1,6 +1,6 @@
 ﻿/*
     wwwroot/js/blockdrawing/ctl/geometricconstruction/rectangleconstruction.js
-    Version: 0.1.1
+    Version: 0.1.3
     (c) 2024, 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -18,15 +18,17 @@
 
 */
 import { GeometricConstruction, ConstructionState } from '../geometricconstruction.js';
-export class RectangleConstruction extends GeometricConstruction {
 
+export class RectangleConstruction extends GeometricConstruction {
     pointA = null;
     pointB = null;
-
     constructionLine = null;
+    addShapeCallback = null;
 
     constructor(config) {
         super(config);
+        this.plannerSpace = config.plannerSpace;
+        this.addShapeCallback = config.addShape;
         this.currentState = new WaitingForPoint_A(this);
     }
 
@@ -56,17 +58,21 @@ export class RectangleConstruction extends GeometricConstruction {
     }
 
     finalise() {
-        this.plannerSpace.addRectangle(this.pointA, this.pointB);
+        this.addShapeCallback({
+            x: Math.min(this.pointA.x, this.pointB.x),
+            y: Math.min(this.pointA.y, this.pointB.y),
+            width: Math.abs(this.pointB.x - this.pointA.x),
+            height: Math.abs(this.pointB.y - this.pointA.y),
+            stroke: 'black',
+            fill: 'none'
+        });
         this.finished = true;
         this.curretntState = null;
         this.plannerSpace.constructionLayer.clear();
     }
-
 }
 
 class WaitingForPoint_A extends ConstructionState {
-
-
     constructor(geometricConstruction) {
         super();
         this.geometricConstruction = geometricConstruction;
@@ -77,17 +83,13 @@ class WaitingForPoint_A extends ConstructionState {
         this.geometricConstruction.setConstructionLine(event.offsetX, event.offsetY);
         this.geometricConstruction.currentState = new WaitingForPoint_B(this.geometricConstruction);
     }
-
 }
 
-
 class WaitingForPoint_B extends ConstructionState {
-
     constructor(geometricConstruction) {
         super();
         this.geometricConstruction = geometricConstruction;
     }
-
 
     acceptMouseMove(event) {
         this.geometricConstruction.setPointB(event.offsetX, event.offsetY);

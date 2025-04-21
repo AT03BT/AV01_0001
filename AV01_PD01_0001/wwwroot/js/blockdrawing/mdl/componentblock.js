@@ -36,7 +36,8 @@
 
 */
 
-import { Observable } from '../itf/observable.js';
+/*import { Observable } from '../itf/observable.js';*/
+export { ComponentBlock, Shape }
 class ComponentBlock {
     constructor() {
         this.id = null; // Unique identifier for the block (e.g., for database)

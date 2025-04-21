@@ -1,6 +1,6 @@
 ﻿/*
     wwwroot/js/blockdrawing/ctl/geometricconstruction/pathconstruction.js
-    Version: 0.1.3
+    Version: 0.1.4
     (c) 2025, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
     https://creativecommons.org/licenses/by/4.0/
 
@@ -23,13 +23,15 @@
 import { GeometricConstruction, ConstructionState } from '../geometricconstruction.js';
 
 export class PathConstruction extends GeometricConstruction {
-
     points = [];
     constructionLine = null;
     currentPath = null;
+    addShapeCallback = null;
 
     constructor(config) {
         super(config);
+        this.plannerSpace = config.plannerSpace;
+        this.addShapeCallback = config.addShape;
         this.currentState = new WaitingForFirstPoint(this);
     }
 
@@ -61,12 +63,21 @@ export class PathConstruction extends GeometricConstruction {
             for (let i = 1; i < this.points.length; i++) {
                 pathData += ` L ${this.points[i].x} ${this.points[i].y}`;
             }
-            this.currentPath = this.plannerSpace.addPath(pathData);
+            //  this.currentPath = this.plannerSpace.addPath(pathData);
+            return pathData;
         }
+        return null;
     }
 
     finalise() {
-        this.drawPath();
+        const pathData = this.drawPath();
+        if (pathData) {
+            this.addShapeCallback({
+                d: pathData,
+                stroke: 'black',
+                fill: 'none'
+            });
+        }
         this.finished = true;
         this.currentState = null;
         this.plannerSpace.constructionLayer.clear();
