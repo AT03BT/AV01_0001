@@ -17,7 +17,7 @@
 import { ComponentBlock, Shape } from '../../mdl/componentblock.js'; 
 export class PlannerSpace {
 
-    componentBlock = null; // Instance of ComponentBlock
+    componentBlock = null;
     constructionLayer = null;
     gridSpacing = 10;
     gridLockEnabled = false;
@@ -30,8 +30,8 @@ export class PlannerSpace {
         this.nthLayer = config.nthLayer;
 
         this.constructionLayer = new ConstructionLayer(config);
-        this.componentBlock = new ComponentBlock(); // Initialize ComponentBlock
-        this.componentBlock.subscribe(this); // Subscribe PlannerSpace to ComponentBlock
+        this.componentBlock = new ComponentBlock();
+        this.componentBlock.subscribe(this);
     }
 
     init() {
@@ -61,7 +61,7 @@ export class PlannerSpace {
     // These methods now interact with the ComponentBlock
 
     addShape(layerId, type, attributes) {
-        const shapeId = this.generateShapeId(); // Implement this method
+        const shapeId = this.generateShapeId();
         const shape = new Shape(shapeId, type, attributes);
         this.componentBlock.addShape(layerId, shape);
     }
@@ -132,6 +132,9 @@ export class PlannerSpace {
         }
 
         if (svgElement) {
+            // Set the id attribute on the SVG element
+            svgElement.setAttribute('id', shape.id);
+
             const targetLayer = this.getLayer(layerId);
             if (targetLayer) {
                 targetLayer.appendChild(svgElement);
@@ -166,9 +169,10 @@ export class PlannerSpace {
     // --- Utility Methods ---
 
     generateShapeId() {
-        // Implement a method to generate unique shape IDs
-        // This could be a simple counter, a UUID generator, etc.
-        return Math.random().toString(36).substring(2, 15); // Example: simple random ID
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     }
 
     // ... other PlannerSpace methods ...
