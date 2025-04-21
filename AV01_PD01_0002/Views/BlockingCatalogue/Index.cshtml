@@ -1,0 +1,69 @@
+﻿@* 
+    Views/BlockCatalogue/Index.cshtml
+    Version: 0.0.1
+    (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
+    https://creativecommons.org/licenses/by/4.0/
+
+    This work builds upon concepts and examples from:
+    "Get started with ASP.NET Core MVC | Microsoft Learn"
+    https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0&tabs=visual-studio
+
+    I need your help, support me by checking out my music on YouTube:
+    https://youtube.com/shorts/Q921NmrtY9c
+    Leave a good comment and a thumbs up.
+    Thank you for your support!
+ *@
+@model AV01_PD01_0001.Models.BlockTypeViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="BlockingCatalogue" asp-action="Index" method="get">
+    <p>
+
+        <select asp-for="BlockCategory" asp-items="Model.Category">
+            <option value="">All</option>
+        </select>
+
+        <label>Title: <input type="text" asp-for="SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Blocks![0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Blocks![0].Type)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Blocks!)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

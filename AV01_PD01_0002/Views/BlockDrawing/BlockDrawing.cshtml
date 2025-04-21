@@ -1,0 +1,401 @@
+﻿@*
+    Views/BlockDrawing/BlockDrawing.cshtml
+    Version: 0.2.0
+    (c) 2024, Minh Tri Tran, with assistance from Google's Gemini - Licensed under CC BY 4.0
+    https://creativecommons.org/licenses/by/4.0/
+
+    🔄 Abstract Cycle: An Attractor's Embrace 🔄 Know it's not a rocket.
+
+               _.--""--._      (1. Boundary/Space)
+             .'          `.
+            /   O      O   \    (2. Potential States within the System)
+           |    \  ^^  /    |
+            \    `----'     /
+             `. _______ .'
+               //_____\\
+              (( ____ ))
+               `------'
+                 /  \        (3. Paths of Change/Flow)
+                |    |
+                 \  /
+                  \/         (4. Implies a Return/Cyclical Nature)
+                   
+                   
+              COMPLEXITY, The result of both differentiation and integration.
+
+    Motivation
+    ----------
+     The Block Drawing as defined here in js is a web-based tool designed to enable the drawing of component blocks connected
+    to the world wide web. It provides a user-friendly interface for clients to manipulate shapes, define properties, save and
+    share their designs.
+
+
+    Assert blocking in the base.
+
+
+    Priority Gauge
+    --------------
+
+    High                           Low
+
+     1      2       3       4       5
+
+
+    Assertions
+    ----------
+
+
+    File structure
+    --------------
+
+    wwwroot/js/BlockDrawing/
+                │   
+                ├── itf/
+                │   └──  observable.js 
+                ├── ctl/
+                │   ├── taskmanager.js
+                │   ├── taskqueue.js
+                │   ├── gc/
+                │   │   ├── pointconstruction.js
+                │   │   ├── lineconstruction.js
+                │   │   ├── circleconstruction.js
+                │   │   ├── pathconstruction.js
+                │   │   └── rectangleconstruction.js
+                │   └── geometficconstruction.js
+                ├── mdl/
+                │    ├── plannerspace.js 
+                │    └── cli/
+                │        ├── treespanjson.js
+                │        ├── treespanstring.js
+                │        ├── treespantxt.js
+                │        └── treespansvg.js
+                ├── cli/
+                │    ├── ctl/
+                │    │    ├── drawingactions.js
+                │    │    ├── traceoptions.js
+                │    │    └─ filingactions.js
+                │    └── mdl/
+                │        └─ plannerspace.js
+                ├── ds/
+                │   └──  observablequeue.js 
+                └─ svgutils.js
+
+    Abbreviations
+    -------------
+     - ctl: Control
+     - itf: Interface
+     - mdl: Model
+     - cli: Client
+
+     - ds: Data Structure
+     - dta: Data
+
+     - bse: Base
+*@
+
+@{
+    ViewData["Title"] = "Component Editor";
+}
+
+<div class="component-editor">
+    <h1 class="editor-title">Block Editor</h1>
+
+    <div id="filingActions" class="filing-actions">
+        <button id="saveButton" class="shape-button">Save</button>
+        <button id="deleteButton" class="shape-button">Delete</button>
+        <button id="clearButton" class="shape-button">Clear</button>
+    </div>
+    <div class="editor-container">
+        <div class="editor-tools">
+            <! -- Grouping activities -- >
+            <div class="operaction-table">
+                <ul class="menu-btns">
+                    <li><button class="manipulation-button" data-manipulation="sm01_sl01_0001">Select</button></li>
+                    <li><button class="manipulation-button" data-manipulation="sm01_un01_0001">Union</button></li>
+                    <li><button class="manipulation-button" data-manipulation="sm01_in01_0001">Intesection</button></li>
+                    <li><button class="manipulation-button" data-manipulation="sm01_gr01_0001">Group</button></li>
+                </ul>
+            </div>
+            <! -- Primative Shpes -- >
+            <div class="shape-table">
+                <ul class="menu-btns">
+                    <li><button class="drawing-button" data-shape-class="sp01_pt01_0001">Point</button></li>
+                    <li><button class="drawing-button" data-shape-class="sp01_ln01_0001">Line</button></li>
+                    <li><button class="drawing-button" data-shape-class="sp01_cc01_0001">Circle</button></li>
+                    <li><button class="drawing-button" data-shape-class="sp01_rt01_0001">Rectangle</button></li>
+                    <li><button class="drawing-button" data-shape-class="cs01_pa01_0001">Path</button></li>
+                </ul>
+            </div>
+            <! -- Reactive Shapes -- >
+            <div class="shape-table">
+                <ul class="menu-btns">
+                    <li><button class="shape-button" data-shape="cs01_ln01_0001">Line</button></li>
+                    <li><button class="shape-button" data-shape="cs01_pa01_0001">Path</button></li>
+                    <li><button class="shape-button" data-shape="cs01_cc01_0001">Circle</button></li>
+                    <li><button class="shape-button" data-shape="cs01_sq01_0001">Square</button></li>
+                    <li><button class="shape-button" data-shape="cs01_rt01_0001">Rectangle</button></li>
+                </ul>
+            </div>
+            <! -- Compoisted Figures -- >
+            <div class="shape-table">
+                <ul class="menu-btns">
+                    <li><button class="shape-button" data-shape="cf01-rl01-0001">Relay</button></li>
+                    <li><button class="shape-button" data-shape="cf01-pb01-0001">Push Button</button></li>
+                    <li><button class="shape-button" data-shape="cf01-bb01-0001">Base Bllock</button></li>
+                </ul>
+            </div>
+        </div>
+        <div class="editor-svg">
+            <svg id="svgDrawing" tabindex="0" oncontextmenu="return false;"
+                 width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+                <g id="background-layer">
+                </g>
+
+                <g id="layer1">
+                    <circle cx="200" cy="150" r="50" fill="lightblue" />
+                    <rect x="50" y="50" width="100" height="80" fill="orange" />
+                </g>
+
+                <g id="foreground-layer">
+                    <circle cx="200" cy="150" r="50" fill="lightblue" />
+                    <rect x="50" y="50" width="100" height="80" fill="orange" />
+                    <svg width="400" height="200">
+                        <line x1="50"
+                              y1="100"
+                              x2="350"
+                              y2="100"
+                              stroke="black"
+                              stroke-width="5"
+                              stroke-dasharray="10 20">
+                            <animate attributeName="stroke-dashoffset"
+                                     from="0"
+                                     to="30"
+                                     dur="3s"
+                                     repeatCount="indefinite" />
+                        </line>
+                    </svg>
+                </g>
+
+                <g id="construction-layer">
+                    <circle cx="200" cy="150" r="50" fill="lightblue" />
+                    <rect x="50" y="50" width="100" height="80" fill="orange" />
+                    <svg width="400" height="200">
+                        <line x1="50"
+                              y1="100"
+                              x2="350"
+                              y2="100"
+                              stroke="black"
+                              stroke-width="5"
+                              stroke-dasharray="10 20">
+                            <animate attributeName="stroke-dashoffset"
+                                     from="0"
+                                     to="30"
+                                     dur="3s"
+                                     repeatCount="indefinite" />
+                        </line>
+                    </svg>
+                </g>
+
+            </svg>
+        </div>
+        <div id="propertyEditor">
+            <div id="propertyEditorContainer">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* Make the component editor take up more screen space */
+        .component-editor {
+            text-align: center;
+            width: 95%; /* Take up 95% of the width */
+            margin: auto; /* Center horizontally */
+            padding: 20px; /* Add some padding around the editor */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        .editor-title {
+            margin-bottom: 20px;
+        }
+
+        /* Adjust the editor container to take full available height */
+        .editor-container {
+            display: flex;
+            justify-content: flex-start; /* Align items to the start */
+            align-items: stretch; /* Stretch items to fill height */
+            height: 80vh; /* Use 80% of the viewport height */
+            margin-bottom: 20px;
+        }
+
+        /* Reduce the width of the editor tools and ensure they don't grow */
+        .editor-tools {
+            display: flex;
+            flex-direction: column;
+            margin-right: 10px;
+            width: 200px; /* Set a fixed width for the tools */
+            flex-shrink: 0; /* Prevent the tools from shrinking */
+        }
+
+        /* Tidy up shape table */
+        .shape-table {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+            width: 100%; /* Take the full width of editor tools */
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+
+        /* Style the menu buttons */
+        .menu-btns {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+            justify-content: flex-start; /* Align buttons to the start */
+        }
+
+            .menu-btns li {
+                margin-right: 5px; /* Reduce spacing between buttons */
+                margin-bottom: 5px; /* Add spacing below buttons */
+            }
+
+        /* Style the shape buttons */
+        .shape-button {
+            padding: 6px 12px; /* Reduce button padding */
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px; /* Reduce border radius */
+            cursor: pointer;
+            font-size: 0.8em; /* Reduce font size */
+        }
+
+            .shape-button:hover {
+                background-color: #0056b3;
+            }
+
+
+        /* Style the shape buttons */
+        .drawing-button {
+            padding: 6px 12px; /* Reduce button padding */
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px; /* Reduce border radius */
+            cursor: pointer;
+            font-size: 0.8em; /* Reduce font size */
+        }
+
+            .drawing-button:hover {
+                background-color: #0056b3;
+            }
+
+        /* Take up the remaining space */
+        .editor-svg {
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .editor-svg:focus {
+                outline: none; /* Remove the default focus outline */
+                box-shadow: none !important; /* Remove the shadow on focus */
+                border: none; /* Remove the border on focus */
+            }
+
+            /* Remove focus styles for elements with tabindex within .editor-svg */
+            .editor-svg [tabindex]:focus {
+                outline: none;
+            }
+
+            /* If .editor-svg itself can receive tab focus */
+            .editor-svg:focus {
+                outline: none;
+            }
+
+        #svgDrawing {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Property Editor Styles */
+        #propertyEditor {
+            width: 250px;
+            margin-left: 10px;
+            flex-shrink: 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+
+        #propertyEditorContainer {
+            /* Styles for the container of dynamically generated properties */
+        }
+
+        /* Filing Actions Styles */
+        .filing-actions {
+            margin-bottom: 10px;
+            text-align: right;
+        }
+    </style>
+}
+
+@section Scripts {
+
+    <style>
+        .selected {
+            stroke: red !important;
+            stroke-width: 2 !important;
+        }
+    </style>
+
+    <script type="module">
+
+        import { TaskManager } from '/js/blockdrawing/ctl/taskmanager.js';
+        import { DrawingActions } from '/js/blockdrawing/cli/ctl/drawingactions.js';
+        import { PlannerSpace } from '/js/blockdrawing/cli/mdl/plannerspace.js';
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const foregroundLayer = document.getElementById("foreground-layer");
+            const backgroundLayer = document.getElementById("background-layer");
+            const constructionLayer = document.getElementById("construction-layer");
+
+            var plannerSpace = new PlannerSpace({
+                drawingPlane: document.getElementById("svgDrawing"),
+                foregroundLayer: foregroundLayer,
+                backgroundLayer: backgroundLayer,
+                constructionLayer: constructionLayer,
+                nthLayer: new Map([
+                    ["0", foregroundLayer],
+                    ["-1", backgroundLayer],
+                    ["1", document.getElementById("layer1")],
+                    ["2", document.getElementById("layer2")],
+                    ["3", document.getElementById("layer3")],
+                    ["4", document.getElementById("layer4")],
+                    ["5", document.getElementById("layer5")]
+                ])
+            });
+            TaskManager.init({
+                plannerSpace: plannerSpace,
+            });
+            DrawingActions.init({
+                selectorString: '.drawing-button',
+                plannerSpace: plannerSpace,
+            });
+        });
+
+    </script>
+}
